@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CryptoBox — Password Strength Checker</title>
+  <meta name="description" content="Check your password strength, generate secure passwords, and verify against 100 common breached passwords." />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="#" class="nav__logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect x="8" y="14" width="16" height="14" rx="2" stroke="#A78BFA" stroke-width="1.5"/>
+          <path d="M11 14v-4a5 5 0 0110 0v4" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="16" cy="21" r="2" fill="#A78BFA"/>
+        </svg>
+        <span>CryptoBox</span>
+      </a>
+      <ul class="nav__links">
+        <li><a href="#checker">Checker</a></li>
+        <li><a href="#generator">Generator</a></li>
+        <li><a href="#breach">Breach DB</a></li>
+        <li><a href="#tips">Tips</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ──────────────────────────────────── -->
+  <section class="hero" id="home">
+    <div class="hero__bg">
+      <div class="orb orb--1"></div>
+      <div class="orb orb--2"></div>
+      <div class="grid-lines"></div>
+    </div>
+    <div class="hero__content container">
+      <p class="hero__eyebrow mono">// Project 02 · Cybrexa Learning Track</p>
+      <h1 class="hero__title">How strong is<br/><span class="accent">your password?</span></h1>
+      <p class="hero__sub">Real-time strength analysis · Secure generator · Breach detection</p>
+      <a href="#checker" class="btn btn--primary">Test Your Password →</a>
+    </div>
+    <div class="hero__stats container">
+      <div class="stat">
+        <span class="stat__num">80%</span>
+        <span class="stat__label">of breaches involve weak passwords</span>
+      </div>
+      <div class="stat__divider"></div>
+      <div class="stat">
+        <span class="stat__num">100</span>
+        <span class="stat__label">most common passwords checked</span>
+      </div>
+      <div class="stat__divider"></div>
+      <div class="stat">
+        <span class="stat__num">0</span>
+        <span class="stat__label mono" id="heroCounter">passwords tested today</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CHECKER ────────────────────────────────── -->
+  <section class="section checker" id="checker">
+    <div class="container">
+      <p class="section__eyebrow mono">// strength.analyze()</p>
+      <h2 class="section__title">Password Strength Checker</h2>
+
+      <div class="checker__card">
+        <div class="input-wrap">
+          <input
+            type="password"
+            id="passwordInput"
+            class="password-input"
+            placeholder="Type your password here…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="toggle-vis" id="toggleVis" aria-label="Show password">
+            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+
+        <!-- Strength meter -->
+        <div class="strength-meter" id="strengthMeter">
+          <div class="strength-meter__track">
+            <div class="strength-meter__fill" id="meterFill"></div>
+          </div>
+          <span class="strength-meter__label mono" id="meterLabel">—</span>
+        </div>
+
+        <!-- Entropy display -->
+        <div class="entropy-row" id="entropyRow">
+          <div class="entropy-item">
+            <span class="mono entropy-item__label">Entropy</span>
+            <span class="entropy-item__val" id="entropyVal">—</span>
+          </div>
+          <div class="entropy-item">
+            <span class="mono entropy-item__label">Time to crack</span>
+            <span class="entropy-item__val" id="crackTime">—</span>
+          </div>
+          <div class="entropy-item">
+            <span class="mono entropy-item__label">Score</span>
+            <span class="entropy-item__val" id="scoreVal">—</span>
+          </div>
+        </div>
+
+        <!-- Criteria checklist -->
+        <div class="criteria" id="criteria">
+          <div class="criteria__item" id="c-length">
+            <span class="criteria__icon">○</span>
+            <span>At least 8 characters</span>
+          </div>
+          <div class="criteria__item" id="c-upper">
+            <span class="criteria__icon">○</span>
+            <span>Uppercase letter (A–Z)</span>
+          </div>
+          <div class="criteria__item" id="c-lower">
+            <span class="criteria__icon">○</span>
+            <span>Lowercase letter (a–z)</span>
+          </div>
+          <div class="criteria__item" id="c-number">
+            <span class="criteria__icon">○</span>
+            <span>Number (0–9)</span>
+          </div>
+          <div class="criteria__item" id="c-symbol">
+            <span class="criteria__icon">○</span>
+            <span>Special character (!@#$…)</span>
+          </div>
+          <div class="criteria__item" id="c-long">
+            <span class="criteria__icon">○</span>
+            <span>12+ characters (recommended)</span>
+          </div>
+        </div>
+
+        <!-- Tip -->
+        <div class="tip-box" id="tipBox" hidden>
+          <span class="mono tip-box__label">💡 Tip</span>
+          <span id="tipText"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GENERATOR ─────────────────────────────── -->
+  <section class="section generator" id="generator">
+    <div class="container">
+      <p class="section__eyebrow mono">// password.generate()</p>
+      <h2 class="section__title">Secure Password Generator</h2>
+
+      <div class="gen__card">
+        <div class="gen__output-wrap">
+          <span class="gen__output mono" id="genOutput">Click generate to create a password</span>
+          <button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+
+        <div class="gen__controls">
+          <div class="gen__control">
+            <label for="lengthSlider">Length: <span class="accent mono" id="lengthVal">16</span></label>
+            <input type="range" id="lengthSlider" min="8" max="32" value="16" class="slider" />
+            <div class="slider__labels"><span>8</span><span>32</span></div>
+          </div>
+
+          <div class="gen__toggles">
+            <label class="toggle-label">
+              <input type="checkbox" id="incUpper" checked />
+              <span class="toggle-track"></span>
+              Uppercase (A–Z)
+            </label>
+            <label class="toggle-label">
+              <input type="checkbox" id="incLower" checked />
+              <span class="toggle-track"></span>
+              Lowercase (a–z)
+            </label>
+            <label class="toggle-label">
+              <input type="checkbox" id="incNumbers" checked />
+              <span class="toggle-track"></span>
+              Numbers (0–9)
+            </label>
+            <label class="toggle-label">
+              <input type="checkbox" id="incSymbols" checked />
+              <span class="toggle-track"></span>
+              Symbols (!@#$)
+            </label>
+          </div>
+        </div>
+
+        <button class="btn btn--primary btn--full" id="generateBtn">⚡ Generate Password</button>
+        <div class="copy-toast" id="copyToast">✅ Copied to clipboard!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BREACH DB ──────────────────────────────── -->
+  <section class="section breach" id="breach">
+    <div class="container">
+      <p class="section__eyebrow mono">// breach.check()</p>
+      <h2 class="section__title">Breach Database Check</h2>
+      <p class="section__desc">We check your password against 100 of the most commonly used and breached passwords — locally, nothing is sent to any server.</p>
+
+      <div class="breach__card">
+        <div class="breach__input-wrap">
+          <input
+            type="password"
+            id="breachInput"
+            class="password-input"
+            placeholder="Enter password to check…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="btn btn--primary" id="breachBtn">Check Now</button>
+        </div>
+
+        <div class="breach__result" id="breachResult" hidden>
+          <div class="breach__icon" id="breachIcon"></div>
+          <div class="breach__text">
+            <strong id="breachTitle"></strong>
+            <p id="breachDesc"></p>
+          </div>
+        </div>
+
+        <div class="breach__privacy mono">
+          🔒 Privacy first — all checks happen in your browser. Your password never leaves your device.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TIPS ──────────────────────────────────── -->
+  <section class="section tips" id="tips">
+    <div class="container">
+      <p class="section__eyebrow mono">// security.tips()</p>
+      <h2 class="section__title">Password Security Tips</h2>
+      <div class="tips__grid">
+        <div class="tip-card">
+          <div class="tip-card__icon">🎲</div>
+          <h3>Use a passphrase</h3>
+          <p>4 random words like <span class="mono accent">correct-horse-battery-staple</span> are stronger and easier to remember than <span class="mono">P@ssw0rd</span>.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-card__icon">🔑</div>
+          <h3>Use a password manager</h3>
+          <p>Tools like Bitwarden (free) or 1Password let you use a unique strong password for every site without memorizing them.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-card__icon">📱</div>
+          <h3>Enable 2FA everywhere</h3>
+          <p>Two-factor authentication stops attackers even if they have your password. Use an app like Google Authenticator.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-card__icon">🚫</div>
+          <h3>Never reuse passwords</h3>
+          <p>If one site gets breached, attackers try your password everywhere else. Each account needs its own unique password.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-card__icon">📏</div>
+          <h3>Length beats complexity</h3>
+          <p>A 16-character password is exponentially harder to crack than an 8-character one, even with symbols.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-card__icon">🔄</div>
+          <h3>Change after breaches</h3>
+          <p>Check <a href="https://haveibeenpwned.com" target="_blank" rel="noopener" class="accent">haveibeenpwned.com</a> regularly and change passwords for any breached accounts immediately.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <p class="mono" style="color:var(--text-muted)">// © 2026 CryptoBox · Cybrexa Project 02</p>
+        <p class="footer__sub">All password checks happen locally — zero data sent to servers.</p>
+      </div>
+      <div class="footer__links">
+        <a href="https://github.com/km23092612-jpg/Cybrexa_02_CryptoBox" target="_blank" class="footer-link">GitHub</a>
+        <a href="SECURITY.md" class="footer-link">SECURITY.md</a>
+        <a href="#home" class="footer-link">↑ Top</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -10,9 +10,16 @@
 
 ---
 
+
 ## 📸 Screenshots
 
-> _Add screenshots after deployment_
+![Weak Password](screenshot-weak.png)
+![Strong Password](screenshot-strong.png)
+![Generator](screenshot-generator.png)
+![Breach Warn](screenshot-breach-warn.png)
+![Breach Safe](screenshot-breach-safe.png)
+
+## docs: add screenshots to README
 
 ---
 
